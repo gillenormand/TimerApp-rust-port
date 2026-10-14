@@ -1,0 +1,237 @@
+import { Button, ScrollView, LineEdit } from "std-widgets.slint";
+
+export struct AppEntry {
+    name: string,
+    time: int,
+    time_str: string,
+}
+
+export component AppWindow inherits Window {
+    title: "appTimer 0.8.5a (Rust)";
+    icon: @image-url("img.png");
+    width: 500px;
+    height: 500px;
+    background: #161616;
+
+    in-out property <string> current_entry_name: "!!!pick an entry!!!";
+    in-out property <string> main_timer_str: "0:00:00";
+    in-out property <string> session_timer_str: "Session: 0:00:00";
+    in-out property <[AppEntry]> entries_list: [];
+    in-out property <bool> timer_running: false;
+    in-out property <bool> has_selected_entry: false;
+
+    // --- Dialog state ---
+    in-out property <bool> dialog_visible: false;
+    in-out property <string> dialog_title: "";
+    in-out property <string> dialog_prompt: "";
+    in-out property <string> dialog_input: "";
+    in-out property <string> dialog_error: "";
+    // 0 = add entry (text), 1 = edit time (int seconds), 2 = add minutes (float)
+    in-out property <int> dialog_mode: 0;
+
+    callback start_clicked();
+    callback pause_clicked();
+    callback add_entry_clicked();
+    callback remove_entry_clicked();
+    callback add_minutes_clicked();
+    callback edit_time_clicked();
+    callback entry_selected(string);
+    callback dialog_accepted();
+    callback dialog_cancelled();
+
+    VerticalLayout {
+        padding: 15px;
+        spacing: 12px;
+
+        Text {
+            text: current_entry_name;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            horizontal-alignment: center;
+            wrap: no-wrap;
+            overflow: elide;
+        }
+
+        Rectangle {
+            border-width: 5px;
+            border-color: timer_running ? #ff8728 : #00000000;
+            background: #1a1a1a;
+            height: 140px;
+
+            Text {
+                text: main_timer_str;
+                font-size: 72px;
+                color: #ffffff;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+        }
+
+        Text {
+            text: session_timer_str;
+            font-size: 20px;
+            color: #ffffff;
+            horizontal-alignment: center;
+        }
+
+        HorizontalLayout {
+            spacing: 10px;
+            height: 35px;
+            Button {
+                text: "Start";
+                enabled: has_selected_entry && !timer_running;
+                clicked => { start_clicked(); }
+            }
+            Button {
+                text: "Pause";
+                enabled: timer_running;
+                clicked => { pause_clicked(); }
+            }
+        }
+
+        HorizontalLayout {
+            spacing: 8px;
+            height: 30px;
+            Button {
+                text: "Add New";
+                enabled: !timer_running;
+                clicked => { add_entry_clicked(); }
+            }
+            Button {
+                text: "Remove";
+                enabled: has_selected_entry && !timer_running;
+                clicked => { remove_entry_clicked(); }
+            }
+            Button {
+                text: "+/- Min";
+                enabled: has_selected_entry && !timer_running;
+                clicked => { add_minutes_clicked(); }
+            }
+            Button {
+                text: "Edit Time";
+                enabled: has_selected_entry && !timer_running;
+                clicked => { edit_time_clicked(); }
+            }
+        }
+
+        Rectangle {
+            background: #1a1a1a;
+
+            ScrollView {
+                horizontal-scrollbar-policy: always-off;
+                vertical-scrollbar-policy: as-needed;
+
+                VerticalLayout {
+                    padding: 5px;
+                    spacing: 4px;
+                    for entry in entries_list : Rectangle {
+                        background: current_entry_name == entry.name ? #2a2a2a : #1a1a1a;
+                        height: 35px;
+                        TouchArea {
+                            clicked => { entry_selected(entry.name); }
+                        }
+                        HorizontalLayout {
+                            padding-left: 10px;
+                            padding-right: 10px;
+                            spacing: 8px;
+
+                            Text {
+                                text: entry.name;
+                                color: #ffffff;
+                                font-size: 14px;
+                                font-weight: 700;
+                                vertical-alignment: center;
+                                horizontal-alignment: left;
+                                wrap: no-wrap;
+                                overflow: elide;
+                                horizontal-stretch: 1;
+                                min-width: 0;
+                            }
+
+                            Text {
+                                text: entry.time_str;
+                                color: #ff8728;
+                                font-size: 14px;
+                                horizontal-alignment: right;
+                                vertical-alignment: center;
+                                horizontal-stretch: 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Block clicks on the list while the timer is running
+            if timer_running : Rectangle {
+                background: transparent;
+                TouchArea { }
+            }
+        }
+    }
+
+    // --- Modal dialog overlay ---
+    if dialog_visible : Rectangle {
+        background: #000000aa;
+        // consume clicks so background is not clickable
+        TouchArea { }
+
+        Rectangle {
+            width: 340px;
+            height: 200px;
+            background: #1e1e1e;
+            border-width: 1px;
+            border-color: #ff8728;
+            // center it
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2;
+
+            VerticalLayout {
+                padding: 15px;
+                spacing: 10px;
+
+                Text {
+                    text: dialog_title;
+                    color: #ffffff;
+                    font-size: 16px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                }
+
+                Text {
+                    text: dialog_prompt;
+                    color: #cccccc;
+                    font-size: 13px;
+                    wrap: word-wrap;
+                }
+
+                input := LineEdit {
+                    text <=> dialog_input;
+                    edited(text) => { dialog_input = text; dialog_error = ""; }
+                    accepted => { dialog_accepted(); }
+                    font-size: 14px;
+                }
+
+                Text {
+                    text: dialog_error;
+                    color: #ff5555;
+                    font-size: 12px;
+                    visible: dialog_error != "";
+                    wrap: word-wrap;
+                }
+
+                HorizontalLayout {
+                    spacing: 8px;
+                    Button {
+                        text: "OK";
+                        clicked => { dialog_accepted(); }
+                    }
+                    Button {
+                        text: "Cancel";
+                        clicked => { dialog_cancelled(); }
+                    }
+                }
+            }
+        }
+    }
+}
