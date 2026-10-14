@@ -11,4 +11,4 @@
 - Сохранение данных : Все данные (названия элементов и затраченное время) сохраняются в файл apps.json.
 - Простой интерфейс : Легкое управление с помощью кнопок и меню.  
 
-![enter image description here](https://github.com/gillenormand/TimerApp/blob/main/readme_files/img1.jpg)
+![enter image description here](https://github.com/gillenormand/TimerApp-rust-port/blob/main/readme_files/img1.jpg)
