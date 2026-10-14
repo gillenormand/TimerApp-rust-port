@@ -1,15 +1,15 @@
-# **app Timer**
-## Описание
-"**app Timer**" — простое приложение для отслеживания времени. Оно позволяет пользователям добавлять, удалять и редактировать элементы, а также отслеживать общее время, проведенное за каждой игрой. Все данные сохраняются локально в формате JSON.  
+# app Timer
 
-### Особенности
-- Отслеживание времени : Показывает общее время, проведенное за каждой добавленной задачей.
-- Добавление элементов : Возможность добавлять новые элементы в список.
-- Удаление элемнтов
-- Редактирование времени : Ручное изменение времени для любого элемента.
-- Пауза/Старт : Возможность поставить таймер на паузу или возобновить его.
-- Сохранение данных : Все данные (названия элементов и затраченное время) сохраняются в файл apps.json.
-- Простой интерфейс : Легкое управление с помощью кнопок и меню.  
+A lightweight utility for tracking time spent on tasks. Features a minimalist interface and local JSON persistence.
+
+## Features
+
+- **⏱️ Time Tracking**: Automatically accumulates total duration per entry.
+- **➕ Entry Management**: Add or remove items effortlessly.
+- **✏️ Manual Editing**: Adjust recorded time for precision.
+- **⏯️ Start/Pause**: Toggle timers to track active sessions accurately.
+- **💾 Local Persistence**: Data saves automatically to `apps.json`.
+- **🎨 Intuitive UI**: Simple, button-driven navigation.
 
 ![enter image description here](https://github.com/gillenormand/TimerApp-rust-port/blob/main/readme_files/img1.jpg)
 
