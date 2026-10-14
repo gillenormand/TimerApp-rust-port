@@ -12,7 +12,7 @@ A lightweight utility for tracking time spent on tasks. Features a minimalist in
 - **🎨 Intuitive UI**: Simple, button-driven navigation.
 
 ![enter image description here](https://github.com/gillenormand/TimerApp-rust-port/blob/main/readme_files/img1.jpg)
-
+___
 # Rust Portable with MinGW for application building
 
 ## Downloads
@@ -33,3 +33,9 @@ A lightweight utility for tracking time spent on tasks. Features a minimalist in
 7. Open VS Code and install extensions:
    - **rust-analyzer**
    - **CodeLLDB**
+
+___
+**Execute  in VScode terminal to build the app**
+
+    cargo build --release
+___
