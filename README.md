@@ -13,7 +13,7 @@ A lightweight utility for tracking time spent on tasks. Features a minimalist in
 
 ![enter image description here](https://github.com/gillenormand/TimerApp-rust-port/blob/main/readme_files/img1.jpg)
 
-# Rust Portable with MinGW
+# Rust Portable with MinGW for application building
 
 ## Downloads
 
